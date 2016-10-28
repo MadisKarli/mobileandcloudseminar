@@ -6,13 +6,14 @@
 #r 0.52s
 #this 1.18 s(spark already running)
 
-#uus.csv
+#uus.csv (1mil rows)
 #r 13.2925 s
 #this 1.316651 min (conversion took the most time)
 
 #uus10mil.csv
 #r - crashed r-studio
-#this 
+#this caused java.lang.OutOfMemoryError: Java heap space
+#and a lot of other errors, no result
 start.time <- Sys.time()
 
 library(aod)
@@ -26,7 +27,7 @@ Sys.setenv(SPARK_HOME=paste("/home/madis/spark2"))
 sparkR.session(spark.sql.crossJoin.enabled = TRUE)
 
 #read data into sparkR dataframe
-mydata <- read.df('seminar/uus.csv', "csv", header = "true", inferSchema = "true", na.strings = "NA")
+mydata <- read.df('uus10mil.csv', "csv", header = "true", inferSchema = "true", na.strings = "NA")
 
 #now convert it to R data.frame and let R handle the calculations
 mydata <- as.data.frame(mydata)
