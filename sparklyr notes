@@ -1,0 +1,14 @@
+Sparklyr overview.
+
+The biggest advantage of SparkR is the ability to run on Spark arbitrary user-defined functions written in R:
+https://spark.apache.org/docs/2.0.1/sparkr.html#applying-user-defined-function
+
+SparkR provides a distributed data frame implementation that supports operations like selection, filtering, aggregation etc. (similar to R data frames, dplyr) but on large datasets. SparkR also supports distributed machine learning using MLlib.
+
+Sparklyr advantages
+Uses dplyr (R users might be familiar with it)
+Way easier to install, Spark can be installed through it
+
+Keywords:
+dplyr, Spark ML and H2O.
+Allows access to Spark functions through wrappers
