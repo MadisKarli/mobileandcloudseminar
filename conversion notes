@@ -1,0 +1,55 @@
+Notes
+
+
+
+Overall
+
+
+Difficulty to do something if logic is hidden behind a library or we are dealing with an imported function.
+
+Logistic regression
+
+
+Same name, slightly different output:
+R: mylogit <- glm(admit ~ gre + gpa + rank, data = mydata, family = "binomial")
+SparkR: mylogit <- glm(admit ~ gre + gpa + rank, data = mydata, family = "binomial")
+
+
+Different input parameters
+R: newdata1$rankP <- predict(mylogit, newdata = newdata1, type = "response")
+SparkR: newdata1 <- SparkR::predict(mylogit, newdata1a)
+
+
+Difference when joining dataframes:
+R: newdata1 <- with(mydata, data.frame(gre = mean(gre), gpa = mean(gpa), rank = factor(1:4)))
+SparkR: newdata1a <- join(agg(mydata, gre = mean(mydata$gre), gpa = mean(mydata$gpa)), createDataFrame(list(0,1,2,3), schema = list("rank")))
+
+The two differences above actually combine into one. Notice how in R we create a new row for output but in SparkR we do not. This is because predict works differently.
+R:
+newdata1 <- with(mydata, data.frame(gre = mean(gre), gpa = mean(gpa), rank = factor(1:4)))
+newdata1$rankP <- predict(mylogit, newdata = newdata1, type = "response")
+
+SparkR:
+newdata1a <- join(agg(mydata, gre = mean(mydata$gre), gpa = mean(mydata$gpa)), createDataFrame(list(0,1,2,3), schema = list("rank")))
+newdata1 <- SparkR::predict(mylogit, newdata1a)
+
+
+
+
+K-means
+
+
+Additional step in SparkR to convert the result so R could show it (perhaps there is a way around it - sparkR gave cluster's starting from 0 but the below did not draw 0's)
+R:
+kc <- kmeans(newiris,3)
+plot(newiris[c("Sepal.Length", "Sepal.Width")], col = kc$cluster)
+
+SparkR:
+kc <- spark.kmeans(sparkIris, Sepal_Length ~ Sepal_Width + Petal_Length + Petal_Width, k = 3, initMode = "k-means")
+fitted = predict(kc, sparkIris)
+fittedR <- as.data.frame(fitted)
+fittedR <- cbind(fittedR[1:6], apply(fittedR[7],2, function(x) x + 1))
+plot(fittedR[c("Sepal_Length", "Sepal_Width")], col = fittedR$prediction)
+
+TODO - get cluster center in SparkR
+
